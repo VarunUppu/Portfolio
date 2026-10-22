@@ -8,14 +8,15 @@ export const SECTIONS = [
   ["contact", "Contact"],
 ];
 export const LINKS = {
-  github: "https://github.com/VarunUppu", 
-  linkedin: "https://www.linkedin.com/in/varun-sandesh-uppu-62772b294/", 
-  email: "varunuppu23@gmail.com", 
+  github: "https://github.com/VarunUppu",
+  linkedin: "https://www.linkedin.com/in/varun-sandesh-uppu-62772b294/",
+  email: "varunuppu23@gmail.com",
   resume: "/public/Varun_Sandesh_Uppu_Resume.pdf",
-  projectA: "https://github.com/VarunUppu/Confidential-Government-Order-GO-Storage",
+  projectA:
+    "https://github.com/VarunUppu/Confidential-Government-Order-GO-Storage",
   projectB: "https://github.com/VarunUppu/Data-Analytical-Tool",
-  liveA:"https://confidential-government-order-go-storage.onrender.com/", //Confidential-Government-Order-GO-Storage
-  liveB:'',
+  liveA: "https://confidential-government-order-go-storage.onrender.com/", //Confidential-Government-Order-GO-Storage
+  liveB: "",
 };
 export const SKILL_GROUPS = [
   ["LANGUAGES", "#0B7A70", ["Python", "JavaScript", "HTML", "CSS", "C"]],
@@ -55,4 +56,10 @@ export const ORBIT_SKILLS = [
   ["MySQL", "#0F2A33"],
   ["Git", "#0F2A33"],
   ["REST APIs", "#2A9FD6"],
+];
+
+export const NOW = [
+  ["BUILDING", "KhetConnect - A Farm Equipment and Labour Sharing Platform"],
+  ["LEARNING", "Cyber Security and Ethical Hacking"],
+  ["OPEN TO", "internships and developer roles"],
 ];

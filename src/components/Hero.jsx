@@ -4,6 +4,7 @@ import { useGSAP } from "@gsap/react";
 import AvatarStage from "./Avatar.jsx";
 import { LINKS } from "../data.js";
 import { goTo, DESKTOP_MOTION, EASE, RM } from "../lib/scroll.js";
+import NowLine from './NowLine.jsx';
 
 export default function Hero({ ready }) {
   const root = useRef();
@@ -133,6 +134,7 @@ export default function Hero({ ready }) {
               problem-solving skills, passionate about building impactful
               software solutions.
             </p>
+            <NowLine />
             <div className="bt">
               <a
                 className="btn p"
