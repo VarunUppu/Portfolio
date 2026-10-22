@@ -114,11 +114,7 @@ export default function Hero({ ready }) {
       <div className="wrap" style={{ position: "relative" }}>
         <div className="hero">
           <div>
-            <span className="badge mono">
-              <i />
-              Final-year CSE student
-            </span>
-            <div className="kick mono">DEVELOPER PORTFOLIO — 2026</div>
+            <NowLine />
             <h1>
               <span className="ln">
                 <span>Varun </span>
@@ -134,7 +130,6 @@ export default function Hero({ ready }) {
               problem-solving skills, passionate about building impactful
               software solutions.
             </p>
-            <NowLine />
             <div className="bt">
               <a
                 className="btn p"
