@@ -15,7 +15,7 @@ export const LINKS = {
   projectA: "https://github.com/VarunUppu/Confidential-Government-Order-GO-Storage",
   projectB: "https://github.com/VarunUppu/Data-Analytical-Tool",
   liveA:"https://confidential-government-order-go-storage.onrender.com/", //Confidential-Government-Order-GO-Storage
-  
+  liveB:'',
 };
 export const SKILL_GROUPS = [
   ["LANGUAGES", "#0B7A70", ["Python", "JavaScript", "HTML", "CSS", "C"]],
