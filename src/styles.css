@@ -1839,3 +1839,64 @@ html {
   letter-spacing: -0.04em;
   line-height: 1;
 }
+
+.dk-hint {
+  display: none;
+  text-align: center;
+  margin-top: 14px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--mut);
+}
+
+@media (max-width: 860px) {
+  .deck {
+    width: min(300px, 78vw);
+  }
+  .dc {
+    padding: 12px;
+    gap: 8px;
+    border-radius: 20px;
+  }
+  .dc .pv {
+    height: 128px;
+    padding: 12px;
+  }
+  .dc .pv .bar {
+    font-size: 9.5px;
+  }
+  .dc .pills {
+    display: none;
+  }
+  .dc .d {
+    font-size: 10px;
+  }
+  .dc h3 {
+    font-size: 18px;
+  }
+  .dc p {
+    font-size: 13px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .dc .tags span {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+  .dc .btn {
+    min-height: 40px;
+    padding: 0 16px;
+    font-size: 13px;
+  }
+  .dc-btns {
+    gap: 8px;
+  }
+  .dk-ctl {
+    margin-top: 48px;
+  }
+  .dk-hint {
+    display: block;
+  }
+}

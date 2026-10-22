@@ -189,9 +189,24 @@ const PROJECTS = [
 ];
 
 const rest = (p) => {
-  const k = Math.ceil(p / 2), s = p === 0 ? 0 : p % 2 ? 1 : -1, sp = innerWidth < 861 ? 0.4 : 1;
-  return { x: s * k * 60 * sp, y: k * 14, rotate: s * k * 10, scale: 1 - k * 0.035 };
+  const k = Math.ceil(p / 2),
+    s = p === 0 ? 0 : p % 2 ? 1 : -1,
+    m = innerWidth < 861;
+  return {
+    x: s * k * (m ? 14 : 60),
+    y: k * (m ? 12 : 14),
+    rotate: s * k * (m ? 4 : 10),
+    scale: 1 - k * (m ? 0.03 : 0.035),
+  };
 };
+
+const THR = () => (innerWidth < 861 ? 60 : 100); // drag distance that triggers a flick
+const mix = (a, b, t) => ({
+  x: a.x + (b.x - a.x) * t,
+  y: a.y + (b.y - a.y) * t,
+  rotate: a.rotate + (b.rotate - a.rotate) * t,
+  scale: a.scale + (b.scale - a.scale) * t,
+});
 
 export default function Projects() {
   const root = useRef(),
@@ -248,10 +263,34 @@ export default function Projects() {
     act.current = "next";
   }, [order]); // eslint-disable-line
 
+  // back cards follow the drag: each one slides toward the slot of the card in front of it
+  const pull = (t) =>
+    order.forEach((idx, p) => {
+      if (p)
+        gsap.to(refs.current[idx], {
+          ...mix(rest(p), rest(p - 1), t),
+          duration: 0.15,
+          ease: "power1.out",
+          overwrite: true,
+        });
+    });
+  const settle = (shift, d) =>
+    order.forEach((idx, p) => {
+      // shift 0 = back to rest, 1 = advance one slot
+      if (p)
+        gsap.to(refs.current[idx], {
+          ...rest(p - shift),
+          duration: d,
+          ease: EASE,
+          overwrite: true,
+        });
+    });
+
   const flick = (dir = 1) => {
     // top card flies off and goes to the back
     if (busy.current || n < 2) return;
     busy.current = true;
+    settle(1, RM ? 0 : 0.4);
     gsap.to(refs.current[order[0]], {
       x: dir * 460,
       rotate: dir * 16,
@@ -283,18 +322,21 @@ export default function Projects() {
     const dx = e.clientX - drag.current.x;
     drag.current.dx = dx;
     gsap.set(refs.current[order[0]], { x: dx, rotate: dx * 0.05 });
+    pull(Math.min(Math.abs(dx) / THR(), 1)); // 0 = untouched, 1 = about to flick
   };
   const up = () => {
     if (!drag.current) return;
     const dx = drag.current.dx;
     drag.current = null;
-    if (Math.abs(dx) > 100) flick(Math.sign(dx));
-    else
+    if (Math.abs(dx) > THR()) flick(Math.sign(dx));
+    else {
       gsap.to(refs.current[order[0]], {
         ...rest(0),
         duration: 0.4,
         ease: EASE,
       });
+      settle(0, 0.4);
+    }
   };
 
   return (
@@ -388,6 +430,7 @@ export default function Projects() {
             →
           </button>
         </div>
+        <p className="dk-hint mono">SWIPE TO SHUFFLE</p>
       </div>
     </section>
   );
