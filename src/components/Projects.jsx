@@ -61,14 +61,137 @@ const PROJECTS = [
       </>
     ),
   },
+  {
+    // date: "SEP 2023 – OCT 2023",
+    kind: "React App",
+    title: "Social Media Dashboard",
+    text: "A web-based analytics dashboard that consolidates social media performance metrics, including followers, engagement rate, reach, and impressions, into interactive visualizations to help users monitor performance across multiple platforms.",
+    tags: ["React", "TypeScript", "Express.js", "Analytics"],
+    link: LINKS.projectC,
+    live: LINKS.liveC,
+    preview: (
+      <>
+        <div className="bar mono">
+          <span>Dashboard · Overview</span>
+          <span>SAMPLE DATA</span>
+        </div>
+        <svg
+          viewBox="0 0 200 60"
+          preserveAspectRatio="none"
+          style={{ width: "100%", height: 56 }}
+          aria-hidden="true"
+        >
+          <polyline
+            points="0,48 25,40 50,44 75,28 100,32 125,18 150,24 175,10 200,14"
+            fill="none"
+            stroke="#0F2A33"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          <polyline
+            points="0,54 25,50 50,52 75,42 100,46 125,36 150,40 175,30 200,34"
+            fill="none"
+            stroke="#1B7DAE"
+            strokeWidth="2"
+            strokeDasharray="3 4"
+            strokeLinecap="round"
+            opacity=".7"
+          />
+        </svg>
+        <div className="row">
+          <div className="mono">
+            FOLLOWERS
+            <span className="mb" style={{ width: "72%" }} />
+          </div>
+          <div className="mono">
+            ENGAGEMENT
+            <span className="mb" style={{ width: "48%" }} />
+          </div>
+          <div className="mono">
+            REACH
+            <span className="mb" style={{ width: "86%" }} />
+          </div>
+        </div>
+      </>
+    ),
+  },
+  {
+    // date: "SEP 2023 – OCT 2023",
+    kind: "Full-Stack",
+    title: "VenueFlow",
+    text: "Smart stadium crowd management REST API — built with Node.js, Express, Firebase Admin SDK, and deployed on Google Cloud Run.",
+    tags: ["React", "Node.js", "Express.js", "Firebase", "Crowd Management"],
+    link: LINKS.projectD,
+    live: LINKS.liveD,
+    preview: (
+      <>
+        <div className="bar mono">
+          <span>VenueFlow · Live crowd</span>
+          <span>● LIVE</span>
+        </div>
+        <div className="gates">
+          {[
+            ["A", 70],
+            ["B", 42],
+            ["C", 90],
+            ["D", 28],
+          ].map(([g, h]) => (
+            <div key={g}>
+              <i
+                style={{
+                  height: h + "%",
+                  background:
+                    h > 80
+                      ? "#0F2A33"
+                      : h > 55
+                        ? "#1B7DAE"
+                        : "rgba(255,255,255,.85)",
+                }}
+              />
+              <span className="mono">GATE {g}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mono" style={{ fontSize: 10, letterSpacing: ".12em" }}>
+          NODE · EXPRESS · FIREBASE · CLOUD RUN
+        </div>
+      </>
+    ),
+  },
+  {
+    // date: "SEP 2023 – OCT 2023",
+    kind: "AI Assistant",
+    title: "ElectionPath AI",
+    text: "A persona-based, AI-powered election education assistant built with Gemini 2.0 Flash, Google Translate API, and Google Calendar API — zero build tools, no backend, just open the file.",
+    tags: ["Javascript", "Gemini AI", "Google APIs"],
+    link: LINKS.projectE,
+    live: LINKS.liveE,
+    preview: (
+      <>
+        <div className="bar mono">
+          <span>ElectionPath AI</span>
+          <span>GEMINI 2.0 FLASH</span>
+        </div>
+        <div className="chat">
+          <span className="b u">How do I register to vote?</span>
+          <span className="b a">
+            Here is a simple step-by-step guide for you…
+          </span>
+        </div>
+        <div className="pills mono">
+          <span>TRANSLATE </span>
+          <span>ADD TO CALENDAR</span>
+        </div>
+      </>
+    ),
+  },
 ];
 
-const rest = (p) => ({
-  x: p * 18,
-  y: p * 12,
-  rotate: p * 3,
-  scale: 1 - p * 0.04,
-});
+const rest = (p) => {
+  const k = Math.ceil(p / 2), s = p === 0 ? 0 : p % 2 ? 1 : -1, sp = innerWidth < 861 ? 0.4 : 1;
+  return { x: s * k * 60 * sp, y: k * 14, rotate: s * k * 10, scale: 1 - k * 0.035 };
+};
 
 export default function Projects() {
   const root = useRef(),
@@ -117,7 +240,7 @@ export default function Projects() {
   useLayoutEffect(() => {
     order.forEach((idx, p) => {
       const el = refs.current[idx],
-        r = { ...rest(p), opacity: p > 3 ? 0 : 1, duration: dur, ease: EASE };
+        r = { ...rest(p), opacity: p > 4 ? 0 : 1, duration: dur, ease: EASE };
       if (p === 0 && act.current === "prev")
         gsap.fromTo(el, { x: -460, rotate: -16, scale: 1 }, r);
       else gsap.to(el, r);
@@ -210,7 +333,7 @@ export default function Projects() {
             >
               <div className="pv">{p.preview}</div>
               <div className="d mono">
-                <span>{p.date}</span>
+                {p.date && <span>{p.date}</span>}
                 <span>{p.kind}</span>
               </div>
               <h3>{p.title}</h3>
