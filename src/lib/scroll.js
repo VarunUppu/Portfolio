@@ -17,6 +17,15 @@ export const EASE = "power3.out"; // the one ease-out curve
 export const scrollState = { y: 0 };
 export let lenis = null;
 
+let wipe = null;
+export const setWipe = (fn) => {
+  wipe = fn;
+};
+export const jumpTo = (target) => {
+  lenis?.scrollTo(target, { immediate: true, force: true, offset: -10 });
+  ScrollTrigger.update();
+};
+
 // Smooth inertial scroll, driven by GSAP's ticker so every ScrollTrigger stays in sync.
 export function initScroll() {
   const onNative = () => (scrollState.y = window.scrollY);
@@ -40,9 +49,10 @@ export function initScroll() {
 }
 
 export const goTo = (target) => {
+  const el = document.querySelector(target);
+  const far =
+    el && Math.abs(el.getBoundingClientRect().top) > innerHeight * 0.5;
+  if (lenis && wipe && far) return wipe(target); // long jump: play the transition
   if (lenis) lenis.scrollTo(target, { offset: -10, duration: 1.3 });
-  else
-    document
-      .querySelector(target)
-      ?.scrollIntoView({ behavior: RM ? "auto" : "smooth" });
+  else el?.scrollIntoView({ behavior: RM ? "auto" : "smooth" });
 };

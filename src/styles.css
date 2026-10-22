@@ -1787,3 +1787,55 @@ main {
   position: relative;
   z-index: 1;
 }
+
+/* ---- page transition ---- */
+#tr {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  z-index: 85;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #bdebe4, #5eead4);
+  will-change: transform;
+}
+#tr::before,
+#tr::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 90px;
+}
+#tr::before {
+  top: -89px;
+  background: #bdebe4;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+#tr::after {
+  bottom: -89px;
+  background: #5eead4;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+}
+html {
+  scrollbar-gutter: stable;
+}
+.tr-in {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  color: var(--ink);
+}
+.tr-in .mono {
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  color: var(--deep);
+}
+.tr-in b {
+  font-size: clamp(36px, 8vw, 84px);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}

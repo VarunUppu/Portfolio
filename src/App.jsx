@@ -3,6 +3,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Loader from "./components/Loader.jsx";
 import Cursor from "./components/Cursor.jsx";
 import Nav from "./components/Nav.jsx";
+import Transition from './components/Transition.jsx';
 import Hero from "./components/Hero.jsx";
 import About from "./components/About.jsx";
 import Education from "./components/Education.jsx";
@@ -33,6 +34,7 @@ export default function App() {
     <>
       <div className="dots" aria-hidden="true" />
       <Cursor />
+      <Transition />
       <Loader onDone={done} />
       <Nav />
       <main>
