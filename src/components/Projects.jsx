@@ -13,6 +13,7 @@ const PROJECTS = [
     tags: ["Python", "Flask", "TinyDB", "Vanilla JS"],
     link: LINKS.projectA,
     live: LINKS.liveA,
+    screenshot: "/screens/CGOS.png",
     preview: (
       <>
         <div className="bar mono">
@@ -41,6 +42,7 @@ const PROJECTS = [
     tags: ["Python"],
     link: LINKS.projectB,
     live: LINKS.liveB,
+    screenshot: "",
     preview: (
       <>
         <div className="bar mono">
@@ -69,6 +71,7 @@ const PROJECTS = [
     tags: ["React", "TypeScript", "Express.js", "Analytics"],
     link: LINKS.projectC,
     live: LINKS.liveC,
+    screenshot: "",
     preview: (
       <>
         <div className="bar mono">
@@ -124,6 +127,7 @@ const PROJECTS = [
     tags: ["React", "Node.js", "Express.js", "Firebase", "Crowd Management"],
     link: LINKS.projectD,
     live: LINKS.liveD,
+    screenshot: "",
     preview: (
       <>
         <div className="bar mono">
@@ -167,6 +171,7 @@ const PROJECTS = [
     tags: ["Javascript", "Gemini AI", "Google APIs"],
     link: LINKS.projectE,
     live: LINKS.liveE,
+    screenshot: "",
     preview: (
       <>
         <div className="bar mono">
@@ -208,6 +213,8 @@ const mix = (a, b, t) => ({
   scale: a.scale + (b.scale - a.scale) * t,
 });
 
+
+
 export default function Projects() {
   const root = useRef(),
     refs = useRef([]),
@@ -216,6 +223,7 @@ export default function Projects() {
     act = useRef("init"),
     drag = useRef(null);
   const [order, setOrder] = useState(PROJECTS.map((_, i) => i));
+  const [flip, setFlip] = useState({});
   const n = PROJECTS.length,
     dur = RM ? 0 : 0.55;
 
@@ -373,7 +381,33 @@ export default function Projects() {
               ref={(el) => (refs.current[i] = el)}
               style={{ zIndex: n - order.indexOf(i) }}
             >
-              <div className="pv">{p.preview}</div>
+              <div className={"pvw" + (flip[i] ? " flip" : "")}>
+                <div className="pv front">{p.preview}</div>
+                {p.screenshot && (
+                  <>
+                    <div className="pv back">
+                      <img
+                        src={p.screenshot}
+                        alt={`${p.title} screenshot`}
+                        loading="lazy"
+                        decoding="async"
+                        draggable="false"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="flipb mono"
+                      aria-pressed={!!flip[i]}
+                      aria-label={
+                        flip[i] ? "Show sketch preview" : "Show screenshot"
+                      }
+                      onClick={() => setFlip((f) => ({ ...f, [i]: !f[i] }))}
+                    >
+                      {flip[i] ? "SKETCH" : "SCREENSHOT"} ↻
+                    </button>
+                  </>
+                )}
+              </div>
               <div className="d mono">
                 {p.date && <span>{p.date}</span>}
                 <span>{p.kind}</span>

@@ -1918,3 +1918,75 @@ html {
     background: rgba(255, 255, 255, 0.92);
   }
 }
+
+/* ---- flip-to-screenshot ---- */
+.dc .pvw {
+  position: relative;
+  height: 170px;
+  flex: none;
+  perspective: 900px;
+}
+.dc .pvw .pv {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: transform 0.7s var(--ease);
+}
+.dc .pvw .front {
+  transform: rotateY(0);
+}
+.dc .pvw.flip .front {
+  transform: rotateY(-180deg);
+}
+.dc .pvw .back {
+  transform: rotateY(180deg);
+  padding: 0;
+  overflow: hidden;
+  background: var(--tint);
+}
+.dc .pvw.flip .back {
+  transform: rotateY(0);
+}
+.dc .pvw .back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+.flipb {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition:
+    transform 0.3s var(--ease),
+    background 0.3s;
+}
+.flipb:hover {
+  transform: translateY(-2px);
+  background: var(--tint);
+}
+@media (max-width: 860px) {
+  .dc .pvw {
+    height: 128px;
+  }
+  .flipb {
+    min-height: 44px;
+    padding: 0 14px;
+  }
+}
