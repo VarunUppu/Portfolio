@@ -40,7 +40,7 @@ const PROJECTS = [
     text: "A Python tool that automates the analysis of employee data, so HR teams can make informed decisions with far less manual effort.",
     tags: ["Python"],
     link: LINKS.projectB,
-    live: LINKS.liveB,
+    // live: LINKS.liveB,
     preview: (
       <>
         <div className="bar mono">
