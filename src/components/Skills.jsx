@@ -1,12 +1,23 @@
-import { useRef } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import SkillsOrbit from "./SkillsOrbit.jsx";
 import { SKILL_GROUPS } from "../data.js";
+
+const SkillsOrbit = lazy(() => import("./SkillsOrbit.jsx"));
 
 export default function Skills() {
   const root = useRef(),
     intro = useRef({ p: 0 });
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      ([e]) => e.isIntersecting && setNear(true),
+      { rootMargin: "700px" },
+    );
+    io.observe(root.current);
+    return () => io.disconnect();
+  }, []);
+  
   // PROJECTS → SKILLS: chips fly in and rotate around the core as you scroll (the orbit also spins with scroll; dragging takes over)
   useGSAP(
     () => {
@@ -47,7 +58,7 @@ export default function Skills() {
         </div>
         <h2>My toolkit, in orbit.</h2>
         <div className="sk">
-          <SkillsOrbit intro={intro} />
+          {near ? <Suspense fallback={<div id="orbit" />}><SkillsOrbit intro={intro} /></Suspense> : <div id="orbit" />}
           <div className="groups">
             {SKILL_GROUPS.map(([title, color, items, soft]) => (
               <div key={title} className={"g card" + (soft ? " sf" : "")}>
