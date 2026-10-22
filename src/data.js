@@ -14,7 +14,7 @@ export const LINKS = {
   resume: "/public/Varun_Sandesh_Uppu_Resume.pdf",
   projectA: "https://github.com/VarunUppu/Confidential-Government-Order-GO-Storage",
   projectB: "https://github.com/VarunUppu/Data-Analytical-Tool",
-  liveA:"#", //Confidential-Government-Order-GO-Storage
+  liveA:"https://confidential-government-order-go-storage.onrender.com/", //Confidential-Government-Order-GO-Storage
   liveB:"#", //Data-Analytical-Tool
 };
 export const SKILL_GROUPS = [
