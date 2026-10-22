@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 import AvatarStage from "./Avatar.jsx";
 import { LINKS } from "../data.js";
 import { goTo, DESKTOP_MOTION, EASE, RM } from "../lib/scroll.js";
-import NowLine from './NowLine.jsx';
+import NowLine from "./NowLine.jsx";
 
 export default function Hero({ ready }) {
   const root = useRef();
@@ -144,7 +144,11 @@ export default function Hero({ ready }) {
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </a>
-              <a className="btn" href={LINKS.resume} download="Varun_Sandesh_Uppu_Resume.pdf">
+              <a
+                className="btn"
+                href={LINKS.resume}
+                download="Varun_Sandesh_Uppu_Resume.pdf"
+              >
                 <svg viewBox="0 0 24 24">
                   <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
                 </svg>
@@ -155,6 +159,7 @@ export default function Hero({ ready }) {
           <AvatarStage
             id="s1"
             orbit
+            sparkles
             // hint="Drag to orbit · Click to wave"
             style={{ height: "min(66vh,600px)" }}
           >

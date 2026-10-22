@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import {
+  OrbitControls,
+  Environment,
+  Lightformer,
+  ContactShadows,
+  Sparkles,
+} from "@react-three/drei";
 import * as THREE from "three";
 import { RM, isMobile } from "../lib/scroll.js";
 
@@ -13,21 +19,18 @@ if (typeof window !== "undefined") {
   });
 }
 
-const Mat = ({ c, glow }) => (
-  <meshStandardMaterial
+const Mat = ({ c, glow, gloss }) => (
+  <meshPhysicalMaterial
     color={c}
-    roughness={0.45}
+    roughness={gloss ? 0.18 : 0.4}
     metalness={0.05}
+    clearcoat={gloss ? 1 : 0.3}
+    clearcoatRoughness={0.15}
     emissive={glow ? c : "#000000"}
     emissiveIntensity={glow ? 1.1 : 0}
   />
 );
 
-/**
- * Procedural avatar built from primitives. To use a real model later:
- * replace the contents of <group ref={g}> with  <primitive object={useGLTF('/avatar.glb').scene} />
- * and keep `armR` pointed at the right-arm node so the wave still works.
- */
 function Rig({ wave }) {
   const g = useRef(),
     armR = useRef(),
@@ -41,6 +44,10 @@ function Rig({ wave }) {
   const blink = useRef({ next: 0, start: -10 }),
     look = useRef({ x: 0, y: 0, nx: 0, ny: 0, next: 0 }),
     hap = useRef(0);
+  const body = useRef(),
+    ant = useRef(),
+    pop = useRef(0),
+    prevY = useRef(0);
   const chest = useMemo(() => {
     const c = document.createElement("canvas");
     c.width = c.height = 128;
@@ -51,15 +58,27 @@ function Rig({ wave }) {
     x.fillText("</>", 64, 84);
     return new THREE.CanvasTexture(c);
   }, []);
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, dt) => {
     const t = clock.elapsedTime;
     g.current.rotation.y += (mouse.x * 0.5 - g.current.rotation.y) * 0.08; // follows the cursor
     g.current.rotation.x += (mouse.y * 0.2 - g.current.rotation.x) * 0.08;
     g.current.position.y = RM ? 0 : Math.sin(t * 1.6) * 0.08;
-    if (waveProp.current || w.current > 0) {
-      armR.current.rotation.z = 2.4 + Math.sin(t * 10) * 0.4;
-      if (!waveProp.current) w.current -= 0.008;
-    } else armR.current.rotation.z += (0.2 - armR.current.rotation.z) * 0.1;
+    const waving = waveProp.current || w.current > 0;
+    if (w.current > 0 && !waveProp.current) w.current -= 0.008;
+    const target = waving ? 2.4 + Math.sin(t * 10) * 0.4 : 0.2;
+    armR.current.rotation.z += (target - armR.current.rotation.z) * 0.15; // eases up instead of snapping
+
+    const br = Math.sin(t * 1.6); // breathing
+    body.current.scale.set(1 + br * 0.012, 1 - br * 0.018, 1 + br * 0.012);
+    pop.current = Math.max(0, pop.current - dt * 1.8); // squash-and-stretch on click
+    const q = Math.sin(pop.current * Math.PI) * 0.07;
+    g.current.scale.set(1 + q, 1 - q, 1 + q);
+    g.current.rotation.z =
+      Math.sin(t * 0.7) * 0.025 - mouse.x * 0.04 + (waving ? -0.05 : 0); // curious lean
+    const vy = g.current.rotation.y - prevY.current;
+    prevY.current = g.current.rotation.y;
+    ant.current.rotation.z +=
+      (-vy * 10 + Math.sin(t * 2.2) * 0.06 - ant.current.rotation.z) * 0.12; // antenna lags and wobbles
     // ---- eyes ----
     const now = performance.now() / 1000;
     const B = blink.current,
@@ -93,15 +112,21 @@ function Rig({ wave }) {
     mouth.current.scale.set(1 + 0.3 * H, 1 + 0.5 * H, 1);
   });
   return (
-    <group ref={g} onClick={() => (w.current = 1.2)}>
+    <group ref={g} onClick={() => { w.current = 1.2; pop.current = 1; }}>
       <mesh position={[0, 0.95, 0]}>
         <sphereGeometry args={[0.95, 40, 40]} />
-        <Mat c="#F4FBFA" />
+        <Mat c="#F4FBFA" gloss />
       </mesh>
       {/* visor, now pushed out in front of the face */}
       <mesh position={[0, 0.97, 0.72]} scale={[1, 0.62, 0.5]}>
         <sphereGeometry args={[0.72, 32, 32]} />
-        <meshStandardMaterial color="#0F2A33" roughness={0.2} metalness={0.4} />
+        <meshPhysicalMaterial
+          color="#0F2A33"
+          roughness={0.08}
+          metalness={0.6}
+          clearcoat={1}
+          envMapIntensity={1.5}
+        />
       </mesh>
 
       {/* eyes */}
@@ -151,17 +176,13 @@ function Rig({ wave }) {
         <torusGeometry args={[1, 0.06, 10, 40, Math.PI]} />
         <Mat c="#7CD4FF" />
       </mesh>
-      <mesh position={[0, 2.1, 0]}>
-        <cylinderGeometry args={[0.03, 0.03, 0.5, 8]} />
-        <Mat c="#14B8A6" />
-      </mesh>
-      <mesh position={[0, 2.4, 0]}>
-        <sphereGeometry args={[0.11, 16, 16]} />
-        <Mat c="#14B8A6" glow />
-      </mesh>
-      <mesh position={[0, -0.55, 0]}>
+      <group ref={ant} position={[0, 1.85, 0]}>
+  <mesh position={[0, 0.25, 0]}><cylinderGeometry args={[0.03, 0.03, 0.5, 8]} /><Mat c="#14B8A6" /></mesh>
+  <mesh position={[0, 0.55, 0]}><sphereGeometry args={[0.11, 16, 16]} /><Mat c="#14B8A6" glow /></mesh>
+</group>
+      <mesh ref={body} position={[0, -0.55, 0]}>
         <capsuleGeometry args={[0.72, 0.7, 8, 24]} />
-        <Mat c="#14B8A6" />
+        <Mat c="#14B8A6" gloss />
       </mesh>
       <mesh position={[0, -0.4, 0.8]}>
         <planeGeometry args={[0.8, 0.8]} />
@@ -170,7 +191,7 @@ function Rig({ wave }) {
       <group position={[-0.95, -0.1, 0]} rotation={[0, 0, -0.2]}>
         <mesh position={[0, -0.4, 0]}>
           <cylinderGeometry args={[0.14, 0.14, 0.8, 12]} />
-          <Mat c="#14B8A6" />
+          <Mat c="#14B8A6" gloss />
         </mesh>
         <mesh position={[0, -0.82, 0]}>
           <sphereGeometry args={[0.17, 12, 12]} />
@@ -180,7 +201,7 @@ function Rig({ wave }) {
       <group ref={armR} position={[0.95, -0.1, 0]} rotation={[0, 0, 0.2]}>
         <mesh position={[0, -0.4, 0]}>
           <cylinderGeometry args={[0.14, 0.14, 0.8, 12]} />
-          <Mat c="#14B8A6" />
+          <Mat c="#14B8A6" gloss />
         </mesh>
         <mesh position={[0, -0.82, 0]}>
           <sphereGeometry args={[0.17, 12, 12]} />
@@ -195,6 +216,7 @@ export default function AvatarStage({
   id,
   orbit = false,
   wave = false,
+  sparkles = false,
   hint,
   style,
   children,
@@ -221,8 +243,49 @@ export default function AvatarStage({
         camera={{ position: [0, 0.3, 8.6], fov: 35 }}
         gl={{ alpha: true, antialias: true }}
       >
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[3, 5, 5]} intensity={0.9} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[3, 5, 5]} intensity={1.1} />
+        <directionalLight
+          position={[-4, 2, -3]}
+          intensity={0.9}
+          color="#7CD4FF"
+        />{" "}
+        {/* cool rim light */}
+        <Environment resolution={128}>
+          {" "}
+          {/* built from light panels, so no download needed */}
+          <Lightformer
+            form="rect"
+            intensity={2}
+            position={[0, 4, 4]}
+            scale={[8, 3, 1]}
+          />
+          <Lightformer
+            form="rect"
+            intensity={1}
+            color="#7CD4FF"
+            position={[-5, 1, 2]}
+            scale={[3, 6, 1]}
+          />
+        </Environment>
+        <ContactShadows
+          position={[0, -1.75, 0]}
+          opacity={0.35}
+          scale={5}
+          blur={2.6}
+          far={3}
+          color="#0B7A70"
+          resolution={isMobile() ? 128 : 256}
+        />
+        {sparkles && (
+          <Sparkles
+            count={isMobile() ? 10 : 18}
+            scale={[4.5, 4.5, 2]}
+            size={3}
+            speed={0.4}
+            color="#5EEAD4"
+          />
+        )}
         <Rig wave={wave} />
         {orbit && (
           <OrbitControls
