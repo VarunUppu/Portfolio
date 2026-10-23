@@ -11,7 +11,7 @@ export const LINKS = {
   github: "https://github.com/VarunUppu",
   linkedin: "https://www.linkedin.com/in/varun-sandesh-uppu-62772b294/",
   email: "varunuppu23@gmail.com",
-  resume: "/public/Varun_Sandesh_Uppu_Resume.pdf",
+  resume: "/Varun_Sandesh_Uppu_Resume.pdf",
   projectA:
     "https://github.com/VarunUppu/Confidential-Government-Order-GO-Storage",
   projectB: "https://github.com/VarunUppu/Data-Analytical-Tool",
