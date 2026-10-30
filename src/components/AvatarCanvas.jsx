@@ -229,9 +229,11 @@ export default function AvatarCanvas({
   wave = false,
   sparkles = false,
   vis = true,
+  onReady
 }) {
   return (
     <Canvas
+      onCreated={() => onReady?.()}
       frameloop={vis ? "always" : "never"}
       dpr={[1, isMobile() ? 1.25 : 2]}
       camera={{ position: [0, 0.3, 8.6], fov: 35 }}

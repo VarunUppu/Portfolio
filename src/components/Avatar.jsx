@@ -11,10 +11,14 @@ export default function AvatarStage({
   style,
   children,
 }) {
-  const ref = useRef(),
-    [vis, setVis] = useState(true),
-    [go, setGo] = useState(false);
+  const ref = useRef();
+  const [vis, setVis] = useState(true),
+    [go, setGo] = useState(false),
+    [ready, setReady] = useState(false);
+
   useEffect(() => {
+    const el = ref.current;
+    if (!el) return; // safety: never observe a missing element
     const io = new IntersectionObserver(
       ([e]) => {
         setVis(e.isIntersecting);
@@ -22,9 +26,10 @@ export default function AvatarStage({
       },
       { rootMargin: "200px" },
     );
-    io.observe(ref.current);
+    io.observe(el);
     return () => io.disconnect();
   }, []);
+
   return (
     <div
       className="stage"
@@ -34,9 +39,18 @@ export default function AvatarStage({
       role="img"
       aria-label="Interactive 3D avatar"
     >
+      <div className={"sk-av" + (ready ? " off" : "")} aria-hidden="true">
+        <div className="m" />
+      </div>
       {go && (
         <Suspense fallback={null}>
-          <Canvas3D orbit={orbit} wave={wave} sparkles={sparkles} vis={vis} />
+          <Canvas3D
+            orbit={orbit}
+            wave={wave}
+            sparkles={sparkles}
+            vis={vis}
+            onReady={() => setReady(true)}
+          />
         </Suspense>
       )}
       {children}

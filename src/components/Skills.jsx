@@ -4,7 +4,14 @@ import { useGSAP } from "@gsap/react";
 import { SKILL_GROUPS } from "../data.js";
 
 const SkillsOrbit = lazy(() => import("./SkillsOrbit.jsx"));
-
+const OrbitSk = () => (
+  <div id="orbit" className="sk-or" aria-hidden="true">
+    <i className="o1" />
+    <i className="o2" />
+    <i className="o3" />
+    <b />
+  </div>
+);
 export default function Skills() {
   const root = useRef(),
     intro = useRef({ p: 0 });
@@ -17,7 +24,7 @@ export default function Skills() {
     io.observe(root.current);
     return () => io.disconnect();
   }, []);
-  
+
   // PROJECTS → SKILLS: chips fly in and rotate around the core as you scroll (the orbit also spins with scroll; dragging takes over)
   useGSAP(
     () => {
@@ -58,7 +65,13 @@ export default function Skills() {
         </div>
         <h2>My toolkit, in orbit.</h2>
         <div className="sk">
-          {near ? <Suspense fallback={<div id="orbit" />}><SkillsOrbit intro={intro} /></Suspense> : <div id="orbit" />}
+          {near ? (
+            <Suspense fallback={<OrbitSk />}>
+              <SkillsOrbit intro={intro} />
+            </Suspense>
+          ) : (
+            <OrbitSk />
+          )}
           <div className="groups">
             {SKILL_GROUPS.map(([title, color, items, soft]) => (
               <div key={title} className={"g card" + (soft ? " sf" : "")}>

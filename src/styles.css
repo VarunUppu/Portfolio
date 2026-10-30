@@ -1990,3 +1990,123 @@ html {
     padding: 0 14px;
   }
 }
+
+/* ---- skeleton loaders ---- */
+@keyframes shim {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes skp {
+  50% {
+    opacity: 0.55;
+    transform: scale(0.97);
+  }
+}
+.sk-sh {
+  background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.3) 30%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.3) 70%
+    )
+    0 0/200% 100%;
+  animation: shim 1.4s linear infinite;
+}
+
+/* avatar silhouette */
+.sk-av {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+.sk-av.off {
+  opacity: 0;
+}
+.sk-av .m {
+  position: relative;
+  width: 40%;
+  max-width: 190px;
+  aspect-ratio: 0.72;
+  animation: skp 1.6s ease-in-out infinite;
+}
+.sk-av .m::before,
+.sk-av .m::after {
+  content: "";
+  position: absolute;
+  background: inherit;
+  background: linear-gradient(
+      100deg,
+      rgba(20, 184, 166, 0.12) 30%,
+      rgba(20, 184, 166, 0.28) 50%,
+      rgba(20, 184, 166, 0.12) 70%
+    )
+    0 0/200% 100%;
+  animation: shim 1.4s linear infinite;
+}
+.sk-av .m::before {
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+.sk-av .m::after {
+  bottom: 0;
+  left: 16%;
+  width: 68%;
+  height: 48%;
+  border-radius: 50% 50% 45% 45%/40% 40% 60% 60%;
+}
+
+/* orbit rings */
+.sk-or {
+  display: grid;
+  place-items: center;
+}
+.sk-or i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  border: 1.5px dashed rgba(11, 122, 112, 0.35);
+  border-radius: 50%;
+}
+.sk-or .o1 {
+  width: min(78%, 440px);
+  height: 30%;
+  rotate: -18deg;
+}
+.sk-or .o2 {
+  width: min(68%, 380px);
+  height: 26%;
+  rotate: 38deg;
+}
+.sk-or .o3 {
+  width: min(58%, 320px);
+  height: 22%;
+  rotate: 92deg;
+}
+.sk-or b {
+  width: 34%;
+  max-width: 150px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 25%,
+    #fff,
+    rgba(189, 235, 228, 0.8) 45%,
+    rgba(20, 184, 166, 0.45)
+  );
+  animation: skp 1.6s ease-in-out infinite;
+}
+
+/* screenshot placeholder: shimmer shows until the image covers it */
+.dc .pvw .back {
+  background: linear-gradient(100deg, #bdebe4 30%, #e4f6f2 50%, #bdebe4 70%) 0
+    0/200% 100%;
+  animation: shim 1.4s linear infinite;
+}
